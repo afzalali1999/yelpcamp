@@ -1,0 +1,62 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">YelpCamp</p>
+            <div class="list-group">
+                <div class="list-group-item active">Info 1</div>
+                <div class="list-group-item">Info 2</div>
+                <div class="list-group-item">Info 3</div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail">
+                <img class="img-responsive" src="<%= campground.image %>">
+                <div class="caption-full">
+                    <h4 class="pull-right">$<%= campground.price %>/night</h4>
+                    <h4><a><%= campground.name %></a></h4>
+                    <p><%= campground.description %></p>
+                    <p>
+                        <em>Submitted By <%= campground.author.username %></em>
+                    </p>
+                    <!--We don't have access to req.user._id // But remember we do have current user that we setup in app.js: res.locals.currentUser = req.user and that's added to every single template. Because we did app.use() every route will have currentUser available in the template equal to the currently logged in user-->
+                    <!--If there's no one signed in, currentUser._id is problematic. It will just return an err. So there's a simple way to check FIRST if there is a current user. If there is then let's check if that user owns this campground. So to prevent the error, all we need to do is if(currentUser && campground.author.id.equals(currentUser._id)) //Remember that if currentUser is false, undefined, or if it's empty, if it's something that is false we never move on to checking if campground.author.id.equals(currentUser._id) is true, because the way that an AND statement works is that it requires both sides to be true.-->
+                    <% if(currentUser && campground.author.id.equals(currentUser._id)){ %>
+                        <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                        <!--for the delete button, you can't just use an <a> link tag. You have to use a form to send a post request that has ?_method=DELETE in the url // And because we have a form rather than just a link it's not gonna be inline so it takes up the next line-->
+                        <form class="delete-form" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                            <button class="btn btn-xs btn-danger">Delete</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+            <!--class "well" gives a nice grey background and border-->
+            <div class="well">
+                <div class="text-right">
+                    <a class="btn btn-success" href="/campgrounds/<%= campground._id %>/comments/new">Add New Comment</a>
+                </div>
+                <hr>
+                    <% for(var i = 0; i < campground.comments.length; i++){ %>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <strong><%= campground.comments[i].author.username %></strong>
+                                    <span class="pull-right">10 Days ago</span>
+                                    <p>
+                                        <%= campground.comments[i].text %>
+                                    </p>
+                                    <% if(currentUser && campground.comments[i].author.id.equals(currentUser._id)){ %>
+                                        <a class="btn btn-xs btn-warning" href="/campgrounds/<%= campground._id %>/comments/<%= campground.comments[i]._id %>/edit">Edit</a>
+                                        <form class="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= campground.comments[i]._id %>?_method=DELETE" method="POST">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="Delete">
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </div>
+                    <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

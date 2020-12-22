@@ -1,0 +1,12 @@
+# YelpCamp App
+- The backend of this application is written using node js and express js
+- Uses the nosql database MongoDB with the help of the Mongoose js framework to store campgrounds and comments.
+- Uses passport js to aid user authentication
+- Inlcudes all CRUD operations and implements the RESTful pattern  
+- Allows user to create, read, update, and delete a campground
+- Each campground can have many comments associated with it
+- Allows a user to create, read, update, and delete a comment associated with a campground
+- Includes middleware authentication to allow individual users to only edit a campground or comment that they are associated with.
+- includes middleware authentication to check if user is autheticated / signed in before performing a certain operation (ex: create a campground/comment)
+- Uses the ejs template engine for frontend display of data
+- Uses the Bootstrap 3 CSS for fontend display
